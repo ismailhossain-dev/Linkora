@@ -328,76 +328,11 @@ const deletePost = async (
     },
   });
 
-  //delete hoye jawa post er response deke ki korbo tai null kore disi
   // return null;
 };
 
-//admin dashbord e eta deakano hobe like allposts , allcomments, allPublished post
-//===ekane multiple query ache tai $transection use korbo
 const getPostsStates = async () => {
   const transactionResult = await prisma.$transaction(async (tx) => {
-    // const totalPost = await tx.post.count();
-
-    // const totlaPublishedPosts = await tx.post.count({
-    //   where: {
-    //     status: PostStatus.PUBLISHED,
-    //   },
-    // });
-    // const totalDraftPosts = await tx.post.count({
-    //   where: {
-    //     status: PostStatus.DRAFT,
-    //   },
-    // });
-    // const totalArchivedPosts = await tx.post.count({
-    //   where: {
-    //     status: PostStatus.ARCHIVED,
-    //   },
-    // });
-
-    // const totalComments = await tx.comment.count();
-
-    // const totalApprovedComments = await tx.comment.count({
-    //   where: {
-    //     status: CommentStatus.APPROVE,
-    //   },
-    // });
-
-    // const totalRejectedComments = await tx.comment.count({
-    //   where: {
-    //     status: CommentStatus.REJECT,
-    //   },
-    // });
-
-    // //all post er total view dekbo
-    // //Not a good approach
-    // //post er views jodi 5lak or 10 lak hoi tahole onek baje obosta hoye jabe and timeoumt hoye off hoye jabe
-    // // const allPosts = await tx.post.findMany();
-    // // let totalPostViews = 0;
-    // // allPosts.forEach((post) => {
-    // //   totalPostViews = totalPostViews + post.views;
-    // // });
-
-    // //===good approch==
-    // //====totalView ta prisma aggregation er mardome count korb==
-    // const totalPostViewsAggregate = await tx.post.aggregate({
-    //   _sum: {
-    //     views: true,
-    //   },
-    // });
-
-    // const totalPostViews = totalPostViewsAggregate._sum.views;
-    // return {
-    //   totalPost,
-    //   totlaPublishedPosts,
-    //   totalDraftPosts,
-    //   totalArchivedPosts,
-    //   totalComments,
-    //   totalApprovedComments,
-    //   totalRejectedComments,
-    //   totalPostViews,
-    // };
-
-    //✔️✔️Good & clean Approch and Promise er madome kajt ta korbo
 
     const [
       totalPosts,
