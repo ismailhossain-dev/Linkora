@@ -1,22 +1,47 @@
-"use client"
+"use client";
 
-import { Button } from "@/components/ui/button"
-import { Card } from "@/components/ui/card"
-import { Input } from "@/components/ui/input"
-import { loginAction } from "../_actions/authActions"
-
-
+import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { loginAction } from "../_actions/authActions";
+import { useActionState, useEffect } from "react";
+import { toast } from "sonner";
 
 const LoginForm = () => {
-  return (
-    <form action={loginAction} className="space-y-4">
-        <Card className="p-5 space-y-4">
-            <Input name="email" type="email" placeholder="Enter your email" required></Input>
-            <Input name="password" type="password" placeholder="Enter your password" required></Input>
-            <Button type="submit">Login</Button>
-        </Card>
-    </form>
-  )
-}
+  //Mutating Data > Showing a pending state next.js used to check form submit , pending
+  const [state, action, pending] = useActionState(loginAction, false);
 
-export default LoginForm
+  //If login successfully then give a tost
+  useEffect(() => {
+    if (!state) return;
+    if (state.success) {
+      toast.success(state.message);
+    }
+
+    if (!state.success) {
+      toast.error(state.message || "Login failed");
+    }
+  }, [state]);
+
+  return (
+    <form action={action} className="space-y-4">
+      <Card className="p-5 space-y-4">
+        <Input
+          name="email"
+          type="email"
+          placeholder="Enter your email"
+          required
+        ></Input>
+        <Input
+          name="password"
+          type="password"
+          placeholder="Enter your password"
+          required
+        ></Input>
+        <Button type="submit">{pending ? "Submitting.." : "Login"}</Button>
+      </Card>
+    </form>
+  );
+};
+
+export default LoginForm;

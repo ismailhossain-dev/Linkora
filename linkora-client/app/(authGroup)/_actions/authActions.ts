@@ -1,6 +1,17 @@
 "use server";
+
+type LoginState = {
+  success: true;
+  statusCode: number;
+  message: string;
+  data: {
+    accessToken: string;
+    refreshToken: string;
+  };
+};
+
 //Used Mutating Data next.js docs
-export const loginAction = async (formData: FormData) => {
+export const loginAction = async (prevState:LoginState, formData: FormData) => {
   const email = formData.get("email");
   const password = formData.get("password");
 
@@ -18,5 +29,5 @@ export const loginAction = async (formData: FormData) => {
 
   const result = await res.json();
 
-  console.log(result);
+  return result;
 };
