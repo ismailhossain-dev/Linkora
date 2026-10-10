@@ -1,5 +1,5 @@
 "use server";
-
+import { cookies } from 'next/headers'
 type LoginState = {
   success: true;
   statusCode: number;
@@ -29,5 +29,19 @@ export const loginAction = async (prevState:LoginState, formData: FormData) => {
 
   const result = await res.json();
 
+  //Token set in browser cokkie next.js > Function > Cokkie docs
+  if(result.success){
+    const cokkieStore = await cookies()
+    cokkieStore.set("accessToken",result.data.accessToken, {
+        httpOnly: true,
+        maxAge: 60 * 60 * 24 , // 1day
+        sameSite: "lax"
+    })
+    cokkieStore.set("refreshToken",result.data.refreshToken, {
+        httpOnly: true,
+        maxAge: 60 * 60 * 24 * 7 , // 7days
+        sameSite: "lax"
+    })
+  }
   return result;
 };
