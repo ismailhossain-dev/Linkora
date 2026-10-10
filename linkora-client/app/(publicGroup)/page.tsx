@@ -1,9 +1,11 @@
 import { Button } from "@/components/ui/button";
-import React from "react";
+import { getMe } from "@/service/getMe";
 
-const RootHome = () => {
-  console.log(process.env.NEXT_PUBLIC_BACKEND_API_URL, "Sensative")
-  console.log(process.env.BACKEND_API_URL, "Public")
+
+const RootHome = async() => {
+  const user = await getMe();
+  console.log("user", user)
+ 
   return <div>HELLO NEXT.JS <Button size={"lg"}>Click Me</Button> </div>;
 };
 

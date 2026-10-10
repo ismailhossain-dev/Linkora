@@ -47,7 +47,7 @@ export const loginAction = async (
       sameSite: "lax",
     });
 
-    redirect("/dashboard")
+    redirect("/")
   }
   return result;
 };
