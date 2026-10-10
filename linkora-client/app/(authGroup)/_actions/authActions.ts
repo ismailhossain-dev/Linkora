@@ -1,5 +1,6 @@
 "use server";
-import { cookies } from 'next/headers'
+import { cookies } from "next/headers";
+import { redirect } from "next/navigation";
 type LoginState = {
   success: true;
   statusCode: number;
@@ -11,7 +12,10 @@ type LoginState = {
 };
 
 //Used Mutating Data next.js docs
-export const loginAction = async (prevState:LoginState, formData: FormData) => {
+export const loginAction = async (
+  prevState: LoginState,
+  formData: FormData,
+) => {
   const email = formData.get("email");
   const password = formData.get("password");
 
@@ -30,18 +34,20 @@ export const loginAction = async (prevState:LoginState, formData: FormData) => {
   const result = await res.json();
 
   //Token set in browser cokkie next.js > Function > Cokkie docs
-  if(result.success){
-    const cokkieStore = await cookies()
-    cokkieStore.set("accessToken",result.data.accessToken, {
-        httpOnly: true,
-        maxAge: 60 * 60 * 24 , // 1day
-        sameSite: "lax"
-    })
-    cokkieStore.set("refreshToken",result.data.refreshToken, {
-        httpOnly: true,
-        maxAge: 60 * 60 * 24 * 7 , // 7days
-        sameSite: "lax"
-    })
+  if (result.success) {
+    const cokkieStore = await cookies();
+    cokkieStore.set("accessToken", result.data.accessToken, {
+      httpOnly: true,
+      maxAge: 60 * 60 * 24, // 1day
+      sameSite: "lax",
+    });
+    cokkieStore.set("refreshToken", result.data.refreshToken, {
+      httpOnly: true,
+      maxAge: 60 * 60 * 24 * 7, // 7day
+      sameSite: "lax",
+    });
+
+    redirect("/dashboard")
   }
   return result;
 };
