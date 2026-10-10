@@ -2,14 +2,15 @@ import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   /* config options here */
-   images: {
+  images: {
     remotePatterns: [
       {
-        protocol: 'https',
-        hostname: '***'
+        protocol: "https",
+        hostname: "***",
       },
     ],
   },
+  cacheComponents: true,
 };
 
 export default nextConfig;

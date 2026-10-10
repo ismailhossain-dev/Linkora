@@ -32,7 +32,35 @@ const navItems = [
   { label: "Team", href: "#team" },
 ]
 
-export default function Navbar() {
+// User Response convert typescript
+type IUser = {
+  success: boolean;
+  statusCode: number;
+  message: string;
+  data: {
+    id: string;
+    name: string;
+    email: string;
+    activeStatus: string;
+    role: string;
+    createdAt: string;
+    updatedAt: string;
+    profile: {
+      id: string;
+      profilePhoto: string;
+      bio: string | null;
+      userId: string;
+      createdAt: string;
+      updatedAt: string;
+    } | null;
+  };
+};
+
+type NavbarProps = {
+  user: IUser;
+};
+
+export default function Navbar({ user }: NavbarProps) {
   return (
     <header className="border-b bg-background/95 backdrop-blur supports-backdrop-filter:bg-background/60">
       <nav
@@ -43,7 +71,7 @@ export default function Navbar() {
           href="#"
           className="justify-self-start text-lg font-semibold tracking-tight text-foreground"
         >
-          Northstar
+          Linkora
         </a>
 
         <div className="hidden items-center gap-1 md:flex">
@@ -64,15 +92,18 @@ export default function Navbar() {
               <Avatar size="sm">
                 <AvatarFallback>JD</AvatarFallback>
               </Avatar>
-              <span className="hidden text-sm font-medium sm:inline">Jordan Davis</span>
+              {/* daynamic name failed */}
+              <span className="hidden text-sm font-medium sm:inline">{user.data?.name || "Name"}</span>
               <ChevronDown className="hidden text-muted-foreground sm:block" aria-hidden="true" />
               <span className="sr-only">Open user menu</span>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="w-56">
               <DropdownMenuGroup>
                 <DropdownMenuLabel>
-                  <p className="font-medium">Jordan Davis</p>
-                  <p className="font-normal text-muted-foreground">jordan@example.com</p>
+                 
+                  <p className="font-normal text-muted-foreground">
+                    {/* Set dynamic email */}
+                    {user.data?.email || "Emain"}</p>
                 </DropdownMenuLabel>
                 <DropdownMenuItem>
                   <User />

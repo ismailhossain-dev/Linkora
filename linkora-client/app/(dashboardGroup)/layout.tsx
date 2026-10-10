@@ -1,7 +1,16 @@
-import React from "react";
+import Navbar from "@/components/shared/Navbar";
+import { getMe } from "@/service/getMe";
+import React, { use } from "react";
 
-const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
-  return <>{children}</>;
+const DashboardLayout = async ({ children }: { children: React.ReactNode }) => {
+  const user = await getMe();
+
+  return (
+    <div>
+      <Navbar user={user} />
+      {children}
+    </div>
+  );
 };
 
 export default DashboardLayout;
