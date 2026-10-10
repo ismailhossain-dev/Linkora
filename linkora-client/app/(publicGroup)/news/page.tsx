@@ -1,8 +1,11 @@
+
 import React from 'react'
 
 const NewsPage = () => {
   return (
-    <div>newsPage</div>
+    <div>newsPage
+        
+    </div>
   )
 }
 
