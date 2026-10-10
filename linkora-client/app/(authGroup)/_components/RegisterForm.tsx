@@ -10,7 +10,7 @@ const RegisterForm = () => {
         <Card className="p-5 space-y-4">
         <Input name ="name" type="text" placeholder="Enter your name" required></Input>
         <Input name ="email" type="email" placeholder="Enter your email" required></Input>
-        <Input name ="password" type="text" placeholder="Enter your password" required></Input>
+        <Input name ="password" type="password" placeholder="Enter your password" required></Input>
         <Button>Register</Button>
         </Card>
     </form>
