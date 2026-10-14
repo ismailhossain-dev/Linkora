@@ -2,23 +2,37 @@ import { PostWhereInput } from "../../../generated/prisma/models";
 import { prisma } from "../../lib/prisma";
 import { IPostquery } from "../post/post.interface";
 
-//the route for only subscribes user
 const getPremiumContent = async (query: IPostquery) => {
-  //default 10 kore data asbe condition match na korle
   const limit = query.limit ? Number(query.limit) : 10;
   const page = query.page ? Number(query.page) : 1;
-  //sorting
-  const sortBy = query.sortBy ? query.sortBy : "createAt";
-  const sortOrder = query.sortOrder ? query.sortOrder : "desc";
-  //culcolate skip
   const skip = (page - 1) * limit;
+  // const sortBy = query.sortBy ? query.sortBy : "createAt";
+  // const sortOrder = query.sortOrder ? query.sortOrder : "desc";
 
-  //optimation sorting
-  let tags = query.tags ? JSON.parse(query.tags as string) : null;
+  //my new code and solve error
+const allowedSortFields = [
+  "createdAt",
+  "updatedAt",
+  "title",
+  "views",
+] as const;
+
+// Validate sortBy
+const sortBy = allowedSortFields.find(
+  (field) => field === query.sortBy
+) ?? "createdAt";
+
+// Validate sortOrder
+const sortOrder: "asc" | "desc" =
+  query.sortOrder === "asc" ? "asc" : "desc";
+
+  // 
+  const tags = query.tags ? JSON.parse(query.tags as string) : null;
+
   const tagsArray = Array.isArray(tags) ? tags : [];
 
-  console.log(tagsArray, "tags array");
   const andConditions: PostWhereInput[] = [];
+
   if (query.searchTerm) {
     andConditions.push({
       OR: [
@@ -55,13 +69,13 @@ const getPremiumContent = async (query: IPostquery) => {
       authorId: query.authorId,
     });
   }
-  //truty value
+
   if (query.isFeatured) {
     andConditions.push({
       isFeatured: Boolean(query.isFeatured),
     });
   }
-  //tags ekta match korle o data dive
+
   if (query.tags) {
     andConditions.push({
       tags: {
@@ -84,12 +98,11 @@ const getPremiumContent = async (query: IPostquery) => {
     where: {
       AND: andConditions,
     },
-     //dynamic limit & skip
     take: limit,
     skip: skip,
 
-    //sorting....
     orderBy: {
+      // sortBy : sortOrder
       [sortBy]: sortOrder,
     },
 
@@ -100,6 +113,11 @@ const getPremiumContent = async (query: IPostquery) => {
         },
       },
       comments: true,
+      _count: {
+        select: {
+          comments: true,
+        },
+      },
     },
   });
 
@@ -110,7 +128,7 @@ const getPremiumContent = async (query: IPostquery) => {
   });
 
   return {
-    data:posts,
+    data: posts,
     meta: {
       page: page,
       limit: limit,
