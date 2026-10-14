@@ -30,8 +30,8 @@ import { Button } from "../ui/button";
 const navItems = [
   { label: "Overview", href: "#overview" },
   { label: "Analytics", href: "#analytics" },
-  { label: "Projects", href: "#projects" },
-  { label: "Team", href: "#team" },
+  { label: "News", href: "/news" },
+  { label: "Premium", href: "/premium" },
 ];
 
 // User Response convert typescript

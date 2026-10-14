@@ -1,33 +1,39 @@
+"use server"
+
 import { cookies } from "next/headers";
+
 export const getMe = async () => {
-  const cokkieStore = await cookies();
-  //taking token from browser
-  const accessToken = await cokkieStore.get("accessToken")?.value;
+    const cookieStore = await cookies();
 
-  if (!accessToken) {
-    return {
-      success: false,
-      message: "User not logged in!",
-    };
-  }
+    const accessToken = cookieStore.get("accessToken")?.value || null;
 
-  const res = await fetch(`${process.env.BACKEND_API_URL}/api/users/me`, {
-    //send token
-    headers: {
-      Authorization: `${accessToken}`,
-      // Cokkie: `accessToken=${accessToken}`,
-    },
-    //user 1 day caching next.js > Functions > fetch
-    //profile caching 1 day because accessToken expire after 1 day
-    cache: "force-cache",
-    next: {
-      revalidate: 60 * 60 * 24 ,//1 day
-      tags: ["my-profile"]
+    if(!accessToken){
+        // throw new Error("User Not Logged In!");
+
+        return {
+            success : false,
+            message : "User not logged in!"
+        }
     }
 
-  });
+    const res = await fetch(`${process.env.BACKEND_API_URL}/api/users/me`, {
+        headers : {
+            // Authorization : accessToken as unknown as string,
+            // Authorization : `${accessToken}`,
+            // Authorization : `Bearer ${accessToken}`
 
-  const result = await res.json();
-  //console.log(result);
-  return result;
-};
+            Cookie : `accessToken=${accessToken}`
+        },
+
+        cache : "force-cache",
+        next : {
+            revalidate : 60 * 60 * 24, // 1day
+            tags : ["my-profile"]
+        }
+    });
+
+    const result = res.json();
+
+
+    return result
+}
