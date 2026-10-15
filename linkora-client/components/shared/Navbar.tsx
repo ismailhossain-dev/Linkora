@@ -28,7 +28,7 @@ import Link from "next/link";
 import { Button } from "../ui/button";
 
 const navItems = [
-  { label: "Overview", href: "#overview" },
+  { label: "Payment", href: "/payment" },
   { label: "Analytics", href: "#analytics" },
   { label: "News", href: "/news" },
   { label: "Premium", href: "/premium" },
@@ -79,12 +79,12 @@ export default function Navbar({ user }: NavbarProps) {
         className="mx-auto grid h-16 max-w-7xl grid-cols-[1fr_auto_1fr] items-center gap-6 px-4 sm:px-6 lg:px-8"
         aria-label="Main navigation"
       >
-        <a
-          href="#"
+        <Link
+          href="/"
           className="justify-self-start text-lg font-semibold tracking-tight text-foreground"
         >
           Linkora
-        </a>
+        </Link>
 
         <div className="hidden items-center gap-1 md:flex">
           {navItems.map((item) => (

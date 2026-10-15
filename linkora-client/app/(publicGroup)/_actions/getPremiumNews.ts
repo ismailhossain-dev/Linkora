@@ -1,3 +1,4 @@
+"use server"
 import { cookies } from "next/headers";
 
 export const getPremiumNews = async () => {
@@ -7,6 +8,8 @@ export const getPremiumNews = async () => {
   //   console.log("premium ", accessToken);
   const res = await fetch(`${process.env.BACKEND_API_URL}/api/premium`, {
     headers: {
+      // Authorization : `${accessToken}`
+      //Authorization: `Bearer ${accessToken}`
       Cookie: `accessToken=${accessToken}`,
     },
     cache: "force-cache",

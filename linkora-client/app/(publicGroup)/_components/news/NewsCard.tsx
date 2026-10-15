@@ -25,7 +25,7 @@ const commentCount = post._count?.comments ?? (Array.isArray(post.comments) ? po
           alt={post.title}
           width={400}
           height={400}
-          fill
+          // fill
         />
       )}
       <CardHeader>
