@@ -5,6 +5,7 @@ import type { NextRequest } from "next/server";
 import { NextResponse } from "next/server";
 import { getNewAccessToken } from "./service/refreshToken";
 import { jwtUtils } from "./utils/jwt";
+import { getSubscriptionStatus } from "./app/(publicGroup)/_actions/getSubscriptionStatus";
 
 const AUTH_ROUTES = ["/login", "/register"];
 // const PUBLIC_ROUTES = ["/", "/news", "/login", "/register"]
@@ -106,6 +107,26 @@ export async function proxy(request: NextRequest) {
   ) {
     return NextResponse.redirect(new URL("/not-found", request.url));
   }
+
+  //premium page secure
+  const subscriptionStatus = await getSubscriptionStatus();
+  const isActive = Boolean(
+    subscriptionStatus.success && subscriptionStatus.data.currentPeriodEnd,
+  );
+
+  if (pathname === "/premium") {
+    if (!isActive) {
+      return NextResponse.redirect(new URL("/payment", request.url));
+    }
+  }
+
+  //if user is subscribe user don't go payment page
+
+  // if (pathname === "/payment") {
+  //   if (isActive) {
+  //     return NextResponse.redirect(new URL("/premium", request.url));
+  //   }
+  // }
 
   // return NextResponse.redirect(new URL('/', request.url))
   return NextResponse.next();

@@ -1,4 +1,3 @@
-
 import {
   Card,
   CardContent,
@@ -8,14 +7,13 @@ import {
 } from "@/components/ui/card";
 import { CheckIcon } from "lucide-react";
 import SubscribeButton from "./SubscribeButton";
-
+import { getSubscriptionStatus } from "../../_actions/getSubscriptionStatus";
+import { Badge } from "@/components/ui/badge";
 
 const pricingData = {
-  title: "Premium Plan",
-  description: "Unlock every premium story, cancel anytime.",
-  price: 9.99,
+  price: 999,
   currency: "$",
-  duration: "/month",
+  duration: "/yearly",
   features: [
     { id: 1, text: "Unlimited premium articles" },
     { id: 2, text: "Early access to new stories" },
@@ -23,16 +21,24 @@ const pricingData = {
   ],
 };
 
-export function PricingSection() {
+export async function PricingSection() {
+  const statusResult = await getSubscriptionStatus();
+
+  const isActive = Boolean(
+    statusResult.success && statusResult.data.isSubscribed,
+  );
   return (
     <Card className="mx-auto w-full max-w-md">
       <CardHeader>
-        <CardTitle className="text-2xl font-bold">
-          {pricingData.title}
+        <CardTitle className="text-2xl font-bold flex justify-between items-center">
+          Premium Plan
+          {isActive && <Badge>Active</Badge>}
         </CardTitle>
 
         <CardDescription>
-          {pricingData.description}
+          {isActive && statusResult.data.currentPeriodEnd
+            ? `Renews on ${new Date(statusResult.data.currentPeriodEnd).toLocaleDateString()}`
+            : "Unlock every premium story, cancel anytime."}
         </CardDescription>
 
         <div className="pt-4">
@@ -40,26 +46,21 @@ export function PricingSection() {
             {pricingData.currency}
             {pricingData.price}
           </span>
-          <span className="text-muted-foreground">
-            {pricingData.duration}
-          </span>
+          <span className="text-muted-foreground">{pricingData.duration}</span>
         </div>
       </CardHeader>
 
       <CardContent className="space-y-6">
         <ul className="space-y-3">
           {pricingData.features.map((feature) => (
-            <li
-              key={feature.id}
-              className="flex items-center gap-3 text-sm"
-            >
+            <li key={feature.id} className="flex items-center gap-3 text-sm">
               <CheckIcon className="size-4 text-primary" />
               <span>{feature.text}</span>
             </li>
           ))}
         </ul>
 
-       <SubscribeButton/>
+        {!isActive && <SubscribeButton />}
       </CardContent>
     </Card>
   );
