@@ -25,6 +25,8 @@ const commentCount = post._count?.comments ?? (Array.isArray(post.comments) ? po
           alt={post.title}
           width={400}
           height={400}
+          className="w-full h-auto"
+          loading="eager"
           // fill
         />
       )}

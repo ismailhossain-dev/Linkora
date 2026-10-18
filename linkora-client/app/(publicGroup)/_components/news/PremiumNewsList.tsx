@@ -1,36 +1,26 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-
+ 
+import { NewsCard } from "@/app/(publicGroup)/_components/news/NewsCard";
 import { IPost } from "@/lib/types";
-import { NewsCard } from "./NewsCard";
 import { getPremiumNews } from "../../_actions/getPremiumNews";
 
-const PremiumNewsList = async () => {
-  // const result = apiResponse.data;
-    const res = await getPremiumNews();
+export async function PremiumNewsList() {
+  const result = await getPremiumNews();
 
-  const result = res.data ?? [];
-
-
-  // console.log(result)
-
-  if (!result) {
+  if (!result.success || !result.data?.length) {
     return (
-      <p className=" flex items-center justify-center min-h-screen text-center text-muted-foreground">
-        No premium news found
+      <p className="py-12 text-center text-muted-foreground">
+        No premium news found.
       </p>
     );
   }
 
   return (
-    <div className="">
-      <h1 className="text-3xl py-4">Premium News</h1>
+    <div className="space-y-8">
       <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
-        {result.map((post: IPost) => (
+        {result.data.map((post: IPost) => (
           <NewsCard key={post.id} post={post} />
         ))}
       </div>
     </div>
   );
-};
-
-export default PremiumNewsList;
+}
