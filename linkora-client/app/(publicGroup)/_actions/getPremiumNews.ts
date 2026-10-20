@@ -17,7 +17,7 @@ export const getPremiumNews = async ({query}: {
       params.set("searchTerm", query.searchTerm as string)
   }
 
-  console.log(params.toString(), "params")
+  // console.log(params.toString(), "params")
 
   const cokkieStore = cookies();
   const accessToken = (await cokkieStore).get("accessToken")?.value || null;

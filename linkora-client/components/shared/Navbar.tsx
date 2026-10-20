@@ -100,7 +100,7 @@ export default function Navbar({ user }: NavbarProps) {
 
         <div className="col-start-3 flex items-center justify-self-end gap-2">
           {user.success ? (
-            <div>
+            <div className="flex items-center gap-2">
               <DropdownMenu>
                 <DropdownMenuTrigger className="flex items-center gap-2 rounded-full outline-none ring-offset-background transition-colors focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2">
                   <Avatar size="sm">
