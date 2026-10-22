@@ -16,6 +16,7 @@ type IComment ={
     status:string;
     createAt:string;
     updateAt: string
+    length?:number
 
 }
 export type IPost ={
