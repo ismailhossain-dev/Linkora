@@ -10,6 +10,7 @@ export interface ICreatePostPayload {
   //eta asbe eums teke
   status?: PostStatus;
   tags: string[];
+  createAt:string
 }
 
 export interface IUpdatePostPayload {

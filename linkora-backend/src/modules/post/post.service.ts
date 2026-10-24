@@ -11,15 +11,17 @@ const createPost = async (payload: ICreatePostPayload, userId: string) => {
   //premium post create only premium user
   const user = await prisma.user.findUniqueOrThrow({
     where: {
-      id: userId
+      id: userId,
     },
     include: {
-      subscription: true
-    }
-  })
+      subscription: true,
+    },
+  });
 
-  if(payload.isPremium && user.subscription?.status !== "ACTIVE"){
-    throw new Error ("You are not a premium user. so you can not create premium content ")
+  if (payload.isPremium && user.subscription?.status !== "ACTIVE") {
+    throw new Error(
+      "You are not a premium user. so you can not create premium content ",
+    );
   }
 
   //
@@ -105,11 +107,11 @@ const getAllPosts = async (query: IPostquery) => {
     });
   }
 
-  //premium post response remove 
+  //premium post response remove
 
   andConditions.push({
-    isPremium: false
-  })
+    isPremium: false,
+  });
 
   //====
   const posts = await prisma.post.findMany({
@@ -138,18 +140,18 @@ const getAllPosts = async (query: IPostquery) => {
 
   const totalPostCount = await prisma.post.count({
     where: {
-      AND: andConditions
-    }
-  })
+      AND: andConditions,
+    },
+  });
   return {
-    data:posts,
+    data: posts,
     meta: {
       page: page,
       limit: limit,
       total: totalPostCount,
-      totalPages: Math.ceil(totalPostCount / limit)
-    }
-  }
+      totalPages: Math.ceil(totalPostCount / limit),
+    },
+  };
 };
 
 //=======most important api user transaction & rollback =========
@@ -206,7 +208,7 @@ const getPostById = async (postId: string) => {
     async (tx) => {
       await tx.post.update({
         where: {
-          id: postId
+          id: postId,
         },
         data: {
           views: {
@@ -220,7 +222,7 @@ const getPostById = async (postId: string) => {
       const post = await tx.post.findUniqueOrThrow({
         where: {
           id: postId,
-           isPremium: false
+          isPremium: false,
         },
         include: {
           author: {
@@ -333,7 +335,6 @@ const deletePost = async (
 
 const getPostsStates = async () => {
   const transactionResult = await prisma.$transaction(async (tx) => {
-
     const [
       totalPosts,
       totalPublishedPosts,
@@ -401,7 +402,7 @@ const getMyPosts = async (authorId: string) => {
     },
 
     orderBy: {
-      createAt: "desc",
+      createdAt: "desc",
     },
 
     include: {
