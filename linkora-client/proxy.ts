@@ -3,9 +3,9 @@ import { JwtPayload } from "jsonwebtoken";
 import { cookies } from "next/headers";
 import type { NextRequest } from "next/server";
 import { NextResponse } from "next/server";
+import { getSubscriptionStatus } from "./app/(publicGroup)/_actions/getSubscriptionStatus";
 import { getNewAccessToken } from "./service/refreshToken";
 import { jwtUtils } from "./utils/jwt";
-import { getSubscriptionStatus } from "./app/(publicGroup)/_actions/getSubscriptionStatus";
 
 const AUTH_ROUTES = ["/login", "/register"];
 // const PUBLIC_ROUTES = ["/", "/news", "/login", "/register"]
@@ -32,17 +32,12 @@ export async function proxy(request: NextRequest) {
       )
     : null;
 
-  // console.log("main refresh", decodedRefreshToken?.success);
-  // console.log("main access", decodedAccessToken?.success);
-
   if (!decodedAccessToken?.success && decodedRefreshToken?.success) {
     //access token has expired but refresh token is valid, get new access token from backend
     const result = await getNewAccessToken();
 
     if (result.success) {
       const newAccessToken = result.data.accessToken;
-
-      // console.log("new accessToken", newAccessToken);
 
       cookieStore.set("accessToken", newAccessToken, {
         httpOnly: true,
@@ -93,10 +88,10 @@ export async function proxy(request: NextRequest) {
 
   // Authenticated Pages Protection : Authorization is not handled yet
   if (!accessToken && !isPublicRoute && !isAuthRoute) {
-    //Redirect work & some work in login form inside login button
-    const loginUrl = new URL(new URL("/login", request.url))
-    loginUrl.searchParams.set("redirectTo", pathname + request.nextUrl.search)
-    //
+    const loginUrl = new URL("/login", request.url);
+
+    loginUrl.searchParams.set("redirectTo", pathname);
+
     return NextResponse.redirect(loginUrl);
   }
 
@@ -112,24 +107,34 @@ export async function proxy(request: NextRequest) {
     return NextResponse.redirect(new URL("/not-found", request.url));
   }
 
-  //premium page secure
-  const subscriptionStatus = await getSubscriptionStatus();
-  const isActive = Boolean(
-    subscriptionStatus.success && subscriptionStatus.data.currentPeriodEnd,
-  );
+  // const subscriptionStatus = await getSubscriptionStatus();
+
+  // const isActive = Boolean(
+  //     subscriptionStatus?.success && subscriptionStatus.data?.isSubscribed,
+  // );
 
   if (pathname === "/premium") {
+    const subscriptionStatus = await getSubscriptionStatus();
+
+    const isActive = Boolean(
+      subscriptionStatus?.success && subscriptionStatus.data?.isSubscribed,
+    );
+
     if (!isActive) {
       return NextResponse.redirect(new URL("/payment", request.url));
     }
   }
 
-  //if user is subscribe user don't go payment page
+  // if(pathname === "/payment"){
+  //     // const subscriptionStatus = await getSubscriptionStatus();
 
-  // if (pathname === "/payment") {
-  //   if (isActive) {
-  //     return NextResponse.redirect(new URL("/premium", request.url));
-  //   }
+  //     // const isActive = Boolean(
+  //     //     subscriptionStatus?.success && subscriptionStatus.data?.isSubscribed,
+  //     // );
+
+  //     if (isActive) {
+  //         return NextResponse.redirect(new URL("/premium", request.url))
+  //     }
   // }
 
   // return NextResponse.redirect(new URL('/', request.url))

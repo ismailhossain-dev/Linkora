@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use server";
+import {  isAccessTokenExist } from "@/service/refreshToken";
 import { revalidateTag } from "next/cache";
 import { cookies } from "next/headers";
 
@@ -19,14 +20,11 @@ export const createPost = async (prevState: PostState, formData: FormData) => {
     isPremium: formData.get("isPremium") === "on",
   };
 
-  const cokkieStore = await cookies();
-  const accessToken = cokkieStore.get("accessToken")?.value;
-  if (!accessToken) {
-    return {
-      success: false,
-      message: "User not logged in ",
-    };
-  }
+
+  //=======If user create when accessToken don't have it help generate accessToken
+  const accessToken = await isAccessTokenExist()
+  //========
+
   const res = await fetch(`${process.env.BACKEND_API_URL}/api/posts`, {
     method: "POST",
     headers: {
@@ -66,7 +64,6 @@ export const updatePost = async (
   prevState: PostState,
   formData: FormData,
 ) => {
-
   // console.log("postId", postId)
   const payload = {
     //?? or
@@ -77,15 +74,8 @@ export const updatePost = async (
     isPremium: formData.get("isPremium") === "on",
   };
 
-  const cookieStore = await cookies();
-  const accessToken = cookieStore.get("accessToken")?.value || null;
+  const accessToken = await isAccessTokenExist()
 
-  if (!accessToken) {
-    return {
-      success: false,
-      message: "User not logged in",
-    };
-  }
 
   const res = await fetch(
     `${process.env.BACKEND_API_URL}/api/posts/${postId}`,
@@ -147,4 +137,3 @@ export const getMyPost = async () => {
 
   return result;
 };
-

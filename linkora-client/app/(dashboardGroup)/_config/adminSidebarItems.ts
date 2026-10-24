@@ -1,5 +1,6 @@
+import { ISidebarMenu } from "@/lib/types";
 import { FileText, LayoutDashboard } from "lucide-react";
-export const ADMIN_SITEBAR_ITEMS = [
+export const ADMIN_SITEBAR_ITEMS:ISidebarMenu[] = [
   {
     label: "Admin Dashboard",
     href: "/author-dashboard",
