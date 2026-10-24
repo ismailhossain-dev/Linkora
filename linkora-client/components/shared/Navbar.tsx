@@ -26,6 +26,7 @@ import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { Button } from "../ui/button";
+import { NavbarProps } from "@/lib/types";
 
 const navItems = [
   { label: "Home", href: "/" },
@@ -35,36 +36,8 @@ const navItems = [
   { label: "My Posts", href: "/dashboard/my-posts" },
 ];
 
-// User Response convert typescript
-type IUser = {
-  success: boolean;
-  statusCode: number;
-  message: string;
-  data: {
-    id: string;
-    name: string;
-    email: string;
-    activeStatus: string;
-    role: string;
-    createdAt: string;
-    updatedAt: string;
-    profile: {
-      id: string;
-      profilePhoto: string;
-      bio: string | null;
-      userId: string;
-      createdAt: string;
-      updatedAt: string;
-    } | null;
-  };
-};
-
-type NavbarProps = {
-  user: IUser;
-};
 
 export default function Navbar({ user }: NavbarProps) {
- 
   const router = useRouter();
   // Logout function
   const handleUserMenuAction = async (action: string) => {
@@ -106,46 +79,66 @@ export default function Navbar({ user }: NavbarProps) {
               <DropdownMenu>
                 <DropdownMenuTrigger className="flex items-center gap-2 rounded-full outline-none ring-offset-background transition-colors focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2">
                   <Avatar size="sm">
-                    <AvatarFallback>JD</AvatarFallback>
+                    <AvatarFallback>
+                      {user.data?.name?.slice(0, 2).toUpperCase() || "JD"}
+                    </AvatarFallback>
                   </Avatar>
 
                   <span className="hidden text-sm font-medium sm:inline">
                     {user.data?.name || "Name"}
                   </span>
+
                   <ChevronDown
                     className="hidden text-muted-foreground sm:block"
                     aria-hidden="true"
                   />
                   <span className="sr-only">Open user menu</span>
                 </DropdownMenuTrigger>
+
                 <DropdownMenuContent align="end" className="w-56">
                   <DropdownMenuGroup>
                     <DropdownMenuLabel>
                       <p className="font-normal text-muted-foreground">
-                        {user.data?.email || "Emain"}
+                        {user.data?.email || "Email"}
                       </p>
                     </DropdownMenuLabel>
-                    <DropdownMenuItem>
-                      <User />
-                      Profile
+
+                    <DropdownMenuItem asChild>
+                      <Link href="/profile">
+                        <User />
+                        Profile
+                      </Link>
                     </DropdownMenuItem>
-                    <DropdownMenuItem>
-                      <LayoutDashboard />
-                      Dashboard
+
+                    <DropdownMenuItem asChild>
+                      <Link href="/dashboard">
+                        <LayoutDashboard />
+                        Dashboard
+                      </Link>
                     </DropdownMenuItem>
-                    <DropdownMenuItem>
-                      <CreditCard />
-                      Billing
+
+                    <DropdownMenuItem asChild>
+                      <Link href="/billing">
+                        <CreditCard />
+                        Billing
+                      </Link>
                     </DropdownMenuItem>
-                    <DropdownMenuItem>
-                      <Bell />
-                      Notifications
+
+                    <DropdownMenuItem asChild>
+                      <Link href="/notifications">
+                        <Bell />
+                        Notifications
+                      </Link>
                     </DropdownMenuItem>
-                    <DropdownMenuItem>
-                      <Settings />
-                      Settings
+
+                    <DropdownMenuItem asChild>
+                      <Link href="/settings">
+                        <Settings />
+                        Settings
+                      </Link>
                     </DropdownMenuItem>
                   </DropdownMenuGroup>
+
                   <DropdownMenuSeparator />
 
                   <DropdownMenuItem
@@ -160,17 +153,20 @@ export default function Navbar({ user }: NavbarProps) {
                 </DropdownMenuContent>
               </DropdownMenu>
 
+              {/* Mobile Navigation */}
               <DropdownMenu>
                 <DropdownMenuTrigger className="flex size-9 items-center justify-center rounded-md text-muted-foreground outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 md:hidden">
                   <Menu aria-hidden="true" />
                   <span className="sr-only">Open navigation menu</span>
                 </DropdownMenuTrigger>
+
                 <DropdownMenuContent align="end" className="w-48">
                   <DropdownMenuGroup>
                     <DropdownMenuLabel>Navigate</DropdownMenuLabel>
+
                     {navItems.map((item) => (
                       <DropdownMenuItem key={item.href} asChild>
-                        <a href={item.href}>{item.label}</a>
+                        <Link href={item.href}>{item.label}</Link>
                       </DropdownMenuItem>
                     ))}
                   </DropdownMenuGroup>

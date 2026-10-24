@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Home, PanelsTopLeft, Sparkles } from "lucide-react";
+import { PanelsTopLeft } from "lucide-react";
 
 import {
   Sidebar,
@@ -16,14 +16,25 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
+import { sidebarMenuItems } from "../_config/sidebarMenuItems";
+import { ISidebarMenu, NavbarProps } from "@/lib/types";
 
-const links = [
-  { label: "Overview", href: "/", icon: Home },
-  { label: "Demon", href: "/demon", icon: Sparkles },
-];
+// const navItems = [
+//   { label: "My Posts", href: "/dashboard/my-posts", icon: Home },
+//   { label: "My Profile", href: "/dashboard/my-profile", icon: Sparkles },
+// ];
 
-export function DashboardSidebar() {
+export function DashboardSidebar({ user }: NavbarProps) {
   const pathname = usePathname();
+  let navItems: ISidebarMenu[] = [];
+
+  if (user.data?.role === "USER") {
+    navItems = sidebarMenuItems.USER;
+  } else if (user.data?.role === "ADMIN") {
+    navItems = sidebarMenuItems.ADMIN;
+  } else if (user.data.role === "AUTHOR") {
+    navItems = sidebarMenuItems.AUTHOR;
+  }
 
   return (
     <Sidebar collapsible="offcanvas">
@@ -45,7 +56,7 @@ export function DashboardSidebar() {
 
           <SidebarGroupContent>
             <SidebarMenu>
-              {links.map((link) => {
+              {navItems.map((link) => {
                 const Icon = link.icon;
 
                 const active =

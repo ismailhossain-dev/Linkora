@@ -1,0 +1,10 @@
+import { ISidebarMenu } from "@/lib/types";
+import { FileText, LayoutDashboard } from "lucide-react";
+export const AUTHOR_SITEBAR_ITEMS:ISidebarMenu[] = [
+  {
+    label: "Author Dashboard",
+    href: "/author-dashboard",
+    icon: LayoutDashboard,
+  },
+  { label: "My Posts", href: "/author-dashboard/my-posts", icon: FileText },
+];
