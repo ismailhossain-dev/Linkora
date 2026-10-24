@@ -23,10 +23,6 @@ const createPost = catchAsync(
 );
 const getAllPosts = catchAsync(
   async (req: Request, res: Response, next: NextFunction) => {
-    //postman teke query ta nitese dynamic filtering and searching and pagination er jonno
-    //http://localhost:5000/api/posts?title=Ronaldo &content=Ronaldo&searchTerm=Ron&limit=1&page=2&sortBy=createdAt&orderBy=desc
-
-    //? er por value bosale seta amra req.query morder pai and : er por value bosale seta amr req.params er vitor pai
 
     const query = req.query as IPostquery;
 
@@ -78,7 +74,6 @@ const getPostById = catchAsync(
 );
 const updatePost = catchAsync(
   async (req: Request, res: Response, next: NextFunction) => {
-    console.log("hello");
     const postId = req.params.postId;
     if (!postId) {
       throw new Error("Post Id Required In Params");
@@ -86,7 +81,7 @@ const updatePost = catchAsync(
     const payload = req.body;
     const authorId = req.user?.id;
     const isAdmin = req.user?.role === "ADMIN";
-    await postService.updatePost(
+   const result = await postService.updatePost(
       postId as string,
       payload,
       authorId as string,
@@ -98,7 +93,7 @@ const updatePost = catchAsync(
       statusCode: httpStatus.OK,
       message: "Post Updated Successfully",
       //delete hole response dekabo na
-      data: null,
+      data:result ,
     });
   },
 );
