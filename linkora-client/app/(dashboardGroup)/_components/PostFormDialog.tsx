@@ -11,7 +11,7 @@ import { IPost } from "@/lib/types";
 import { PencilIcon, PlusIcon } from "lucide-react";
 import { useActionState, useEffect, useState } from "react";
 import { toast } from "sonner";
-import { createPost } from "../_actions/myPostActions";
+import { createPost, updatePost } from "../_actions/myPostActions";
 
 type PostFormDialogProps = {
     mode: "create" | "edit";
@@ -21,8 +21,9 @@ type PostFormDialogProps = {
 export function PostFormDialog({ mode, post }: PostFormDialogProps) {
     const [open, setOpen] = useState(false);
 
+    //useActionsState hook can not call function so we are use bind method
     const action = mode === "edit" && post
-        ? () =>{}
+        ? updatePost.bind(null, post.id)
         : createPost;
 
     const [state, formAction, pending] = useActionState(action, null) as any;

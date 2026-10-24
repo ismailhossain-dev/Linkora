@@ -13,7 +13,7 @@ type PostState = {
 export const createPost = async (prevState: PostState, formData: FormData) => {
   const payload = {
     title: formData.get("title"),
-    conent: formData.get("content"),
+    content: formData.get("content"),
     thumbnail: formData.get("thumbnail"),
     tags: (formData.get("tags") as string).split(", "),
     isPremium: formData.get("isPremium") === "on",
@@ -27,12 +27,11 @@ export const createPost = async (prevState: PostState, formData: FormData) => {
       message: "User not logged in ",
     };
   }
-
-  const res = await fetch(`${process.env.BACKEND_API_URL}/api/posts/my-posts`, {
+  const res = await fetch(`${process.env.BACKEND_API_URL}/api/posts`, {
     method: "POST",
     headers: {
       Cookie: `accessToken =${accessToken}`,
-      "Content-Type":"application/json"
+      "Content-Type": "application/json",
     },
     body: JSON.stringify(payload),
   });
@@ -41,18 +40,82 @@ export const createPost = async (prevState: PostState, formData: FormData) => {
 
   if (result.success) {
     //when user create post then cache will be false
-    revalidateTag("my-posts", "max");
+    revalidateTag("my-posts", {
+      expire: 0,
+    });
   }
 
   //if condition is true
   if (result.success && result.data.isPremium) {
     //getPremiumNews actions cache false
-    revalidateTag("premium-posts", "max");
+    revalidateTag("premium-posts", {
+      expire: 0,
+    });
   } else {
     //we are used in feature
-    revalidateTag("public-posts", "max");
+    revalidateTag("public-posts", {
+      expire: 0,
+    });
   }
 
+  return result;
+};
+
+export const updatePost = async (
+  postId: string,
+  prevState: PostState,
+  formData: FormData,
+) => {
+
+  // console.log("postId", postId)
+  const payload = {
+    //?? or
+    title: formData.get("title") ?? "",
+    content: formData.get("content") ?? "",
+    thumbnail: formData.get("thumbnail") ?? "",
+    tags: (formData.get("tags") as string).split(", ") ?? "",
+    isPremium: formData.get("isPremium") === "on",
+  };
+
+  const cookieStore = await cookies();
+  const accessToken = cookieStore.get("accessToken")?.value || null;
+
+  if (!accessToken) {
+    return {
+      success: false,
+      message: "User not logged in",
+    };
+  }
+
+  const res = await fetch(
+    `${process.env.BACKEND_API_URL}/api/posts/${postId}`,
+    {
+      method: "PATCH",
+      headers: {
+        Cookie: `accessToken =${accessToken}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(payload),
+    },
+  );
+
+  const result = await res.json();
+
+  if (result.success) {
+    revalidateTag("my-posts", {
+      expire: 0,
+    });
+  }
+
+  if (result.success && result.data.isPremium) {
+    revalidateTag("premium-posts", {
+      expire: 0,
+    });
+  } else {
+    revalidateTag("public-posts", {
+      expire: 0,
+    });
+  }
   return result;
 };
 
@@ -84,3 +147,4 @@ export const getMyPost = async () => {
 
   return result;
 };
+

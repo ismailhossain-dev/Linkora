@@ -28,8 +28,8 @@ import Link from "next/link";
 import { Button } from "../ui/button";
 
 const navItems = [
-  { label: "Home", href: "/payment" },
-  { label: "Analytics", href: "#analytics" },
+  { label: "Home", href: "/" },
+  { label: "About", href: "/about" },
   { label: "News", href: "/news" },
   { label: "Premium", href: "/premium" },
   { label: "My Posts", href: "/dashboard/my-posts" },
