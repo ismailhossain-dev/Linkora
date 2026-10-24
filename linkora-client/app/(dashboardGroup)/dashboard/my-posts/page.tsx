@@ -1,20 +1,23 @@
-
-import { PostFormDialog } from '../../_components/PostFormDialog'
+import { Suspense } from "react";
+import { MyPostsList } from "../../_components/MyPostList";
+import { PostFormDialog } from "../../_components/PostFormDialog";
+import { MyPostsSkeleton } from "../../_components/MyPostSkelation";
 const UserMyPostsPage = () => {
   return (
-    <div className='mx-auto max-w-7xl space-y-6 px-4 my-10 sm:px-6 lg:px-8'>
-      <div className='flex items-center justify-between'>
+    <div className="mx-auto max-w-7xl space-y-6 px-4 my-10 sm:px-6 lg:px-8">
+      <div className="flex items-center justify-between">
         <div>
-          <h1 className='text-2xl  font-semibold'>My Posts</h1>
+          <h1 className="text-2xl  font-semibold">My Posts</h1>
           Create and manage your own news posts
         </div>
 
-        <PostFormDialog mode="create"/>
+        <PostFormDialog mode="create" />
       </div>
-
-
+      <Suspense fallback={<MyPostsSkeleton/>}>
+        <MyPostsList />
+      </Suspense>
     </div>
-  )
-}
+  );
+};
 
-export default UserMyPostsPage
+export default UserMyPostsPage;

@@ -28,10 +28,11 @@ import Link from "next/link";
 import { Button } from "../ui/button";
 
 const navItems = [
-  { label: "Payment", href: "/payment" },
+  { label: "Home", href: "/payment" },
   { label: "Analytics", href: "#analytics" },
   { label: "News", href: "/news" },
   { label: "Premium", href: "/premium" },
+  { label: "My Posts", href: "/dashboard/my-posts" },
 ];
 
 // User Response convert typescript
