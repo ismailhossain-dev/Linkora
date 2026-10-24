@@ -19,11 +19,6 @@ import {
 import { sidebarMenuItems } from "../_config/sidebarMenuItems";
 import { ISidebarMenu, NavbarProps } from "@/lib/types";
 
-// const navItems = [
-//   { label: "My Posts", href: "/dashboard/my-posts", icon: Home },
-//   { label: "My Profile", href: "/dashboard/my-profile", icon: Sparkles },
-// ];
-
 export function DashboardSidebar({ user }: NavbarProps) {
   const pathname = usePathname();
   let navItems: ISidebarMenu[] = [];

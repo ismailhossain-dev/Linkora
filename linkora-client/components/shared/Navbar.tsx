@@ -1,185 +1,143 @@
 "use client";
 
 import {
-  Bell,
-  ChevronDown,
-  CreditCard,
-  Menu,
-  LayoutDashboard,
-  LogOut,
-  Settings,
-  User,
-} from "lucide-react";
-
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
-import {
   DropdownMenu,
   DropdownMenuContent,
-  DropdownMenuGroup,
   DropdownMenuItem,
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { logout } from "@/service/logout";
-import { toast } from "sonner";
-import { useRouter } from "next/navigation";
-import Link from "next/link";
-import { Button } from "../ui/button";
 import { NavbarProps } from "@/lib/types";
+import { logout } from "@/service/logout";
+import { LayoutDashboard, LogOut, Settings, User } from "lucide-react";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { toast } from "sonner";
+import { Button } from "../ui/button";
 
+// Navigation items configuration
 const navItems = [
   { label: "Home", href: "/" },
   { label: "About", href: "/about" },
+  { label: "Services", href: "/services" },
+  { label: "Contact", href: "/contact" },
   { label: "News", href: "/news" },
   { label: "Premium", href: "/premium" },
-  { label: "My Posts", href: "/dashboard/my-posts" },
+];
+
+// User menu items configuration
+const userMenuItems = [
+  { label : "Dashboard", icon : LayoutDashboard, action : "dashboard"},
+  { label: "Profile", icon: User, action: "/profile" },
+  { label: "Settings", icon: Settings, action: "settings" },
 ];
 
 
-export default function Navbar({ user }: NavbarProps) {
-  const router = useRouter();
-  // Logout function
+
+export function Navbar({user} : NavbarProps) {
+
+  console.log("navbar user", user)
+    const router = useRouter()
   const handleUserMenuAction = async (action: string) => {
-    if (action === "logout") {
-      await logout();
-      toast.success("User Logged Out Successfully!");
-      router.push("/login");
+
+    if(action === "dashboard" ){
+      if(user.data.role === "USER"){
+        router.push("/dashboard")
+      }
+      else if(user.data.role === "AUTHOR"){
+        router.push("/author-dashboard")
+      }
+      else if(user.data.role === "ADMIN"){
+        router.push("/admin-dashboard")
+      }
+
+      return;
+    }
+
+    if(action === "logout"){
+        await logout();
+        toast.success("User Logged Out Successfully!");
+        router.push("/login");
     }
   };
 
   return (
-    <header className="border-b bg-background/95 backdrop-blur supports-backdrop-filter:bg-background/60">
-      <nav
-        className="mx-auto grid h-16 max-w-7xl grid-cols-[1fr_auto_1fr] items-center gap-6 px-4 sm:px-6 lg:px-8"
-        aria-label="Main navigation"
-      >
-        <Link
-          href="/"
-          className="justify-self-start text-lg font-semibold tracking-tight text-foreground"
-        >
-          Linkora
-        </Link>
+    <nav className="border-b border-border">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="flex items-center justify-between h-16">
+          {/* Logo */}
+          <Link href="/" className="shrink-0">
+            <span className="text-2xl font-bold text-primary">
+              NextJs Press
+            </span>
+          </Link>
 
-        <div className="hidden items-center gap-1 md:flex">
-          {navItems.map((item) => (
-            <a
-              key={item.href}
-              href={item.href}
-              className="rounded-md px-3 py-2 text-sm font-medium text-muted-foreground transition-colors hover:bg-accent hover:text-accent-foreground"
-            >
-              {item.label}
-            </a>
-          ))}
-        </div>
+          {/* Nav Links */}
+          <div className="hidden md:absolute md:left-1/2 md:transform md:-translate-x-1/2 md:flex md:items-center md:gap-8">
+            {navItems.map((item) => (
+              <Link
+                key={item.href}
+                href={item.href}
+                className="text-foreground hover:text-primary transition-colors text-sm font-medium"
+              >
+                {item.label}
+              </Link>
+            ))}
+          </div>
 
-        <div className="col-start-3 flex items-center justify-self-end gap-2">
-          {user.success ? (
-            <div className="flex items-center gap-2">
-              <DropdownMenu>
-                <DropdownMenuTrigger className="flex items-center gap-2 rounded-full outline-none ring-offset-background transition-colors focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2">
-                  <Avatar size="sm">
-                    <AvatarFallback>
-                      {user.data?.name?.slice(0, 2).toUpperCase() || "JD"}
-                    </AvatarFallback>
-                  </Avatar>
-
-                  <span className="hidden text-sm font-medium sm:inline">
-                    {user.data?.name || "Name"}
-                  </span>
-
-                  <ChevronDown
-                    className="hidden text-muted-foreground sm:block"
-                    aria-hidden="true"
-                  />
-                  <span className="sr-only">Open user menu</span>
-                </DropdownMenuTrigger>
-
-                <DropdownMenuContent align="end" className="w-56">
-                  <DropdownMenuGroup>
-                    <DropdownMenuLabel>
-                      <p className="font-normal text-muted-foreground">
-                        {user.data?.email || "Email"}
-                      </p>
-                    </DropdownMenuLabel>
-
-                    <DropdownMenuItem asChild>
-                      <Link href="/profile">
-                        <User />
-                        Profile
-                      </Link>
-                    </DropdownMenuItem>
-
-                    <DropdownMenuItem asChild>
-                      <Link href="/dashboard">
-                        <LayoutDashboard />
-                        Dashboard
-                      </Link>
-                    </DropdownMenuItem>
-
-                    <DropdownMenuItem asChild>
-                      <Link href="/billing">
-                        <CreditCard />
-                        Billing
-                      </Link>
-                    </DropdownMenuItem>
-
-                    <DropdownMenuItem asChild>
-                      <Link href="/notifications">
-                        <Bell />
-                        Notifications
-                      </Link>
-                    </DropdownMenuItem>
-
-                    <DropdownMenuItem asChild>
-                      <Link href="/settings">
-                        <Settings />
-                        Settings
-                      </Link>
-                    </DropdownMenuItem>
-                  </DropdownMenuGroup>
-
-                  <DropdownMenuSeparator />
-
+          {/* User Dropdown */}
+          {
+            user.success ? (
+                <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <div className="cursor-pointer">
+                <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center">
+                  <User className="w-4 h-4 text-primary" />
+                </div>
+              </div>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end" className="w-56">
+              <DropdownMenuLabel className="font-normal">
+                <div className="flex flex-col gap-1">
+                  <p className="text-sm font-medium">
+                    {user.data?.name}
+                  </p>
+                  <p className="text-xs text-muted-foreground">
+                    {user.data?.email}
+                  </p>
+                </div>
+              </DropdownMenuLabel>
+              <DropdownMenuSeparator />
+              {userMenuItems.map((item) => {
+                const Icon = item.icon;
+                return (
                   <DropdownMenuItem
-                    onClick={async () => {
-                      await handleUserMenuAction("logout");
-                    }}
-                    variant="destructive"
+                    key={item.action}
+                    onClick={() => handleUserMenuAction(item.action)}
                   >
-                    <LogOut />
-                    Log out
+                    <Icon className="w-4 h-4 mr-2" />
+                    <span>{item.label}</span>
                   </DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
-
-              {/* Mobile Navigation */}
-              <DropdownMenu>
-                <DropdownMenuTrigger className="flex size-9 items-center justify-center rounded-md text-muted-foreground outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 md:hidden">
-                  <Menu aria-hidden="true" />
-                  <span className="sr-only">Open navigation menu</span>
-                </DropdownMenuTrigger>
-
-                <DropdownMenuContent align="end" className="w-48">
-                  <DropdownMenuGroup>
-                    <DropdownMenuLabel>Navigate</DropdownMenuLabel>
-
-                    {navItems.map((item) => (
-                      <DropdownMenuItem key={item.href} asChild>
-                        <Link href={item.href}>{item.label}</Link>
-                      </DropdownMenuItem>
-                    ))}
-                  </DropdownMenuGroup>
-                </DropdownMenuContent>
-              </DropdownMenu>
-            </div>
-          ) : (
-            <Link href="/login">
-              <Button className="cursor-pointer">Login</Button>
+                );
+              })}
+              <DropdownMenuSeparator />
+              <DropdownMenuItem onClick={async () => {
+                await handleUserMenuAction("logout");
+              }}>
+                <LogOut className="w-4 h-4 mr-2" />
+                <span>Log out</span>
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+            ) : <Link href={"/login"} >
+                   <Button className="cursor-pointer">
+                        Login
+                   </Button>
             </Link>
-          )}
+          }
         </div>
-      </nav>
-    </header>
+      </div>
+    </nav>
   );
 }

@@ -1,4 +1,4 @@
-import Navbar from "@/components/shared/Navbar";
+
 import { getMe } from "@/service/getMe";
 import { DashboardSidebar } from "./_components/DashboardSidebar";
 import {
@@ -7,6 +7,7 @@ import {
   SidebarTrigger,
 } from "@/components/ui/sidebar";
 import { TooltipProvider } from "@/components/ui/tooltip";
+import { Navbar } from "@/components/shared/Navbar";
 
 const DashboardLayout = async ({
   children,
