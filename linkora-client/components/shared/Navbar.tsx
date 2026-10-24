@@ -64,6 +64,7 @@ type NavbarProps = {
 };
 
 export default function Navbar({ user }: NavbarProps) {
+ 
   const router = useRouter();
   // Logout function
   const handleUserMenuAction = async (action: string) => {
