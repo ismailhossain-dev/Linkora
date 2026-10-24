@@ -42,7 +42,7 @@ export async function proxy(request: NextRequest) {
     if (result.success) {
       const newAccessToken = result.data.accessToken;
 
-      console.log("new accessToken", newAccessToken);
+      // console.log("new accessToken", newAccessToken);
 
       cookieStore.set("accessToken", newAccessToken, {
         httpOnly: true,
@@ -93,7 +93,11 @@ export async function proxy(request: NextRequest) {
 
   // Authenticated Pages Protection : Authorization is not handled yet
   if (!accessToken && !isPublicRoute && !isAuthRoute) {
-    return NextResponse.redirect(new URL("/login", request.url));
+    //Redirect login page
+    const loginUrl = new URL(new URL("/login", request.url))
+    loginUrl.searchParams.set("redirectTo", pathname + request.nextUrl.search)
+    //
+    return NextResponse.redirect(loginUrl);
   }
 
   // Authorization : Role based access control
