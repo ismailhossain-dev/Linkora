@@ -5,7 +5,7 @@ import { ISidebarMenu } from "@/lib/types";
 
 const USER_SIDEBAR_ITEMS:ISidebarMenu[] = [
   { label: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
-  { label: "My Posts", href: "dashboard/my-posts", icon: FileText },
+  { label: "My Posts", href: "/dashboard/my-posts", icon: FileText },
 ];
 
 export const sidebarMenuItems = {

@@ -6,10 +6,14 @@ import { Input } from "@/components/ui/input";
 import { loginAction } from "../_actions/authActions";
 import { useActionState, useEffect } from "react";
 import { toast } from "sonner";
+import { useSearchParams } from "next/navigation";
 
 const LoginForm = () => {
+  //redirect work proxy.ts + loginForm + authActions
+  const searchParams = useSearchParams();
+  const redirectTo = searchParams.get("redirectTo") ?? null;
   //Mutating Data > Showing a pending state next.js used to check form submit , pending
-  const [state, action, pending] = useActionState(loginAction, false);
+  const [state, action, pending] = useActionState(loginAction.bind(null, redirectTo as string), false);
 
   //If login successfully then give a tost
   useEffect(() => {
